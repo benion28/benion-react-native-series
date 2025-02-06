@@ -1,90 +1,141 @@
-import { View, Text, StyleSheet, ImageBackground, Pressable } from 'react-native'
-import React from 'react'
-import icedCoffeeImg from '@/assets/images/iced-coffee.png'
-import { Link } from 'expo-router'
+import { StyleSheet, Text, View, Pressable, TextInput, FlatList } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useState } from 'react'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
-const app = () => {
-  return (
-    <View style={styles.constainer}>
-      <ImageBackground 
-        source={icedCoffeeImg} 
-        resizeMode='cover'
-        style={styles.image}
+import { data } from '@/data/todos';
+
+const Index = () => {
+  const [todos, setTodos] = useState(data.sort((a, b) => b.id - a.id))
+  const [text, setText] = useState('')
+
+  const addTodo = () => {
+    if (text.trim()) {
+      const newId = todos.length > 0 ? todos[0].id + 1 : 1
+      setTodos([{ id: newId, title: text, completed: false }, ...todos])
+      setText('')
+    }
+  }
+
+  const toggleTodo = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    )
+  }
+
+  const renderItem = ({ item }) => (
+    <View style={styles.todoItem}>
+      <Text 
+        style={[styles.todoText, item.completed && styles.completedText]}
+        onPress={() => toggleTodo(item.id)}
       >
-        <Text style={styles.title}>
-          Coffee Shop
-        </Text>
-
-        <Link 
-          href="/menu" 
-          asChild
-          style={{ marginHorizontal: 'auto' }}
-        >
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Our Menu</Text>
-          </Pressable>
-        </Link>
-
-        <Link 
-          href="/contact" 
-          asChild
-          style={{ marginHorizontal: 'auto' }}
-        >
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Contact Us</Text>
-          </Pressable>
-        </Link>
-
-      </ImageBackground>
+        {item.title}
+      </Text>
+      <Pressable onPress={() => removeTodo(item.id)}>
+        <MaterialCommunityIcons 
+          name="delete-circle" 
+          size={36} 
+          color="red" 
+          selectable={undefined}
+        />
+      </Pressable>
     </View>
+  )
+
+  const removeTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id))
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Add a new todo"
+          placeholderTextColor="gray"
+          value={text}
+          onChangeText={setText}
+        />
+        <Pressable 
+          onPress={addTodo}
+          style={styles.addButton}
+        >
+          <Text
+            style={styles.addButtonText}
+          >
+            Add
+          </Text>
+        </Pressable>
+      </View>
+      <FlatList 
+        data={todos}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ flexGrow: 1 }}
+      />
+    </SafeAreaView>
   )
 }
 
-export default app
-
 const styles = StyleSheet.create({
-  constainer: {
+  container: {
     flex: 1,
-    flexDirection: 'column',
+    backgroundColor: 'black'
   },
-  image: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    padding: 10,
     width: '100%',
-    height: '100%',
+    maxWidth: 1024,
+    marginHorizontal: 'auto',
+    pointerEvents: 'auto'
+  },
+  input: {
     flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center'
+    minWidth: 0,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    marginRight: 10,
+    fontSize: 18,
+    color: 'white'
   },
-  title: {
-    color: 'white',
-    fontSize: 42,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    marginBottom: 120,
+  addButton: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5
   },
-  link: {
-    color: 'white',
-    fontSize: 42,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 4,
+  addButtonText: {
+    fontSize: 18,
+    color: 'black'
   },
-  button: {
-    height: 60,
-    width: 150,
-    borderRadius: 20,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
-    padding: 6,
-    marginBottom: 50
+  todoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 4,
+    padding: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    width: '100%',
+    maxWidth: 1024,
+    marginHorizontal: 'auto',
+    pointerEvents: 'auto'
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    padding: 4,
+  todoText: {
+    flex: 1,
+    fontSize: 18,
+    color: 'white'
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+    color: 'gray'
   }
 })
+
+export default Index
