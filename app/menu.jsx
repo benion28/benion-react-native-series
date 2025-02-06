@@ -1,4 +1,4 @@
-import { Appearance, FlatList, Platform, ScrollView, StyleSheet, View, Text, Image } from "react-native";
+import { Appearance, FlatList, Platform, ScrollView, StyleSheet, View, Text, Image, SafeAreaView } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import { MENU_ITEMS  } from "@/constants/MenuItems";
