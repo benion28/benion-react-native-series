@@ -82,8 +82,8 @@ const Index = () => {
   const renderItem = ({ item }) => (
     <View style={styles.todoItem}>
       <Pressable
-        onLongPress={() => handlePress(item.id)}
-        onPress={() => toggleTodo(item.id)}
+        onLongPress={() => toggleTodo(item.id)}
+        onPress={() => handlePress(item.id)}
       >
         <Text 
           style={[styles.todoText, item.completed && styles.completedText]}
