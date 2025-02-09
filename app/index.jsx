@@ -2,13 +2,21 @@ import { StyleSheet, Text, View, Pressable, TextInput, FlatList } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import { Inter_500Medium, useFonts } from '@expo-google-fonts/inter'
 
 import { data } from '@/data/todos';
 
 const Index = () => {
   const [todos, setTodos] = useState(data.sort((a, b) => b.id - a.id))
   const [text, setText] = useState('')
+  const [ loaded, error ] = useFonts({
+    Inter_500Medium
+  })
 
+  if (!loaded && !error) {
+    return null
+  }
+ 
   const addTodo = () => {
     if (text.trim()) {
       const newId = todos.length > 0 ? todos[0].id + 1 : 1
@@ -103,6 +111,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
     fontSize: 18,
+    fontFamily: 'Inter_500Medium',
     color: 'white'
   },
   addButton: {
@@ -130,6 +139,7 @@ const styles = StyleSheet.create({
   todoText: {
     flex: 1,
     fontSize: 18,
+    fontFamily: 'Inter_500Medium',
     color: 'white'
   },
   completedText: {
