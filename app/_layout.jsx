@@ -2,14 +2,15 @@ import { Stack } from "expo-router"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { ThemeProvider } from "../context/ThemeContext"
 
-const { Screen } = Stack
+const { Screen: StackScreen } = Stack
 
 const Layout = () => {
     return (
         <ThemeProvider>
             <SafeAreaProvider>
-                <Stack>
-                    <Screen name="index" options={{ headerShown: false }} />
+                <Stack screenOptions={{ headerShown: false }}>
+                    <StackScreen name="index" />
+                    <StackScreen name="todos/[id]" />
                 </Stack>
             </SafeAreaProvider>
         </ThemeProvider>
